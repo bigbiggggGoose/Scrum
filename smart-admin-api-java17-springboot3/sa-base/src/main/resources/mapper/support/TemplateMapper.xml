@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.sa.admin.module.template.dao.TemplateDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        sys_templates.id,
+        sys_templates.template_code,
+        sys_templates.template_type,
+        sys_templates.template_name,
+        sys_templates.template_content,
+        sys_templates.create_time,
+        sys_templates.update_time,
+        sys_templates.creator,
+        sys_templates.updater
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="net.lab1024.sa.admin.module.template.domain.vo.TemplateVO">
+        SELECT
+        <include refid="base_columns"/>
+        FROM sys_templates
+        <where>
+            <!--主键-->
+            <if test="queryForm.id != null">
+                AND sys_templates.id = #{queryForm.id}
+            </if>
+            <!--创建人（sysUser.id，数值型匹配）-->
+            <if test="queryForm.creator != null">
+                AND sys_templates.creator = #{queryForm.creator}
+            </if>
+            <!--修改人（sysUser.id，数值型匹配）-->
+            <if test="queryForm.updater != null">
+                AND sys_templates.updater = #{queryForm.updater}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

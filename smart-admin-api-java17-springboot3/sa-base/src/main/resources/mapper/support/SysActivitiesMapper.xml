@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.sa.admin.module.scrum.activities.dao.SysActivitiesDao">
+
+    <resultMap id="SysActivitiesVO" type="net.lab1024.sa.admin.module.scrum.activities.domain.vo.SysActivitiesVO"></resultMap>
+
+    <sql id="querySql">
+        select
+        sa.id,
+        sa.user_id,
+        sa.user_name,
+        sa.action_type,
+        sa.target_type,
+        sa.target_id,
+        sa.activity_content,
+        sa.create_time
+        from sys_activities sa
+    </sql>
+
+    <select id="queryPage" resultMap="SysActivitiesVO">
+        <include refid="querySql"></include>
+        <where>
+            <if test="queryForm.id != null">
+                AND sa.id = #{queryForm.id}
+            </if>
+            <if test="queryForm.userId != null">
+                AND sa.user_id = #{queryForm.userId}
+            </if>
+            <if test="queryForm.userName != null and queryForm.userName != ''">
+                AND sa.user_name like concat('%', #{queryForm.userName}, '%')
+            </if>
+            <if test="queryForm.actionType != null and queryForm.actionType != ''">
+                AND sa.action_type = #{queryForm.actionType}
+            </if>
+            <if test="queryForm.targetType != null and queryForm.targetType != ''">
+                AND sa.target_type = #{queryForm.targetType}
+            </if>
+            <if test="queryForm.targetId != null">
+                AND sa.target_id = #{queryForm.targetId}
+            </if>
+            <if test="queryForm.activityContent != null and queryForm.activityContent != ''">
+                AND sa.activity_content like concat('%', #{queryForm.activityContent}, '%')
+            </if>
+        </where>
+        order by sa.create_time desc
+    </select>
+
+</mapper>

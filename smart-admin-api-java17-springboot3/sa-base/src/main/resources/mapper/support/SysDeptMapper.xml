@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.sa.admin.module.dept.dao.SysDeptDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        sys_dept.id,
+        sys_dept.parent_id,
+        sys_dept.dept_code,
+        sys_dept.dept_name,
+        sys_dept.order_num,
+        sys_dept.level,
+        sys_dept.dptarea,
+        sys_dept.status,
+        sys_dept.remark,
+        sys_dept.create_time,
+        sys_dept.update_time
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="net.lab1024.sa.admin.module.dept.domain.vo.SysDeptVO">
+        SELECT
+        <include refid="base_columns"/>
+        FROM sys_dept
+        <where>
+            <!--部门名称-->
+            <if test="queryForm.deptName != null">
+                AND sys_dept.dept_name = #{queryForm.deptName}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询全部，用于前端构建树 -->
+    <select id="listAll" resultType="net.lab1024.sa.admin.module.dept.domain.vo.SysDeptVO">
+        SELECT
+        <include refid="base_columns"/>
+        FROM sys_dept
+        ORDER BY order_num ASC, id ASC
+    </select>
+
+</mapper>

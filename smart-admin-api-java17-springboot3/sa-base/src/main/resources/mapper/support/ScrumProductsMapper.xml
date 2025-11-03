@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.sa.admin.module.scrumproducts.dao.ScrumProductsDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        scrum_products.id,
+        scrum_products.product_name,
+        scrum_products.product_code,
+        scrum_products.product_owner_id,
+        scrum_products.scrum_master_id,
+        scrum_products.team_id,
+        scrum_products.product_source,
+        scrum_products.product_status,
+        scrum_products.product_progress,
+        scrum_products.total_man_day,
+        scrum_products.product_value,
+        scrum_products.product_goal,
+        scrum_products.user_story,
+        scrum_products.acceptance_standard,
+        scrum_products.boundary,
+        scrum_products.stakeholders,
+        scrum_products.customers,
+        scrum_products.plan_start_date,
+        scrum_products.plan_end_date,
+        scrum_products.total_work_days,
+        scrum_products.worked_days,
+        scrum_products.product_remarks,
+        scrum_products.is_deleted,
+        scrum_products.create_time,
+        scrum_products.update_time,
+        scrum_products.creator,
+        scrum_products.updater
+    </sql>
+
+    <!-- 分页查询：联表返回派生字段 -->
+    <select id="queryPage" resultType="net.lab1024.sa.admin.module.scrumproducts.domain.vo.ScrumProductsVO">
+        SELECT
+        <include refid="base_columns"/>,
+        COALESCE(po.real_name, po.username) AS po_name,
+        COALESCE(sm.real_name, sm.username) AS sm_name,
+        d.dept_name AS team_name,
+        IFNULL((
+            SELECT COUNT(1)
+            FROM sys_user u
+            WHERE u.dept_id = scrum_products.team_id
+              AND u.status = 1
+        ), 0) AS team_member_count
+        FROM scrum_products
+        LEFT JOIN sys_user po ON po.id = scrum_products.product_owner_id
+        LEFT JOIN sys_user sm ON sm.id = scrum_products.scrum_master_id
+        LEFT JOIN sys_dept d ON d.id = scrum_products.team_id
+        <where>
+            scrum_products.is_deleted = 0
+            <if test="queryForm != null and queryForm.productId != null">
+                AND scrum_products.id = #{queryForm.productId}
+            </if>
+        </where>
+        ORDER BY scrum_products.create_time DESC
+    </select>
+
+</mapper>

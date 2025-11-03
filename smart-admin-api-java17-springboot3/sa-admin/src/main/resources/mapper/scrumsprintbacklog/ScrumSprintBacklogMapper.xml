@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.sa.admin.module.scrumsprintbacklog.dao.ScrumSprintBacklogDao">
+
+    <select id="queryPage" resultType="net.lab1024.sa.admin.module.scrumsprintbacklog.domain.vo.ScrumSprintBacklogVO">
+        SELECT
+            sb.id,
+            sb.sprint_id,
+            s.sprint_name,
+            p.product_name as productName,
+            t.team_name as teamName,
+            sb.product_backlog_id,
+            pb.backlog_name as product_backlog_name,
+            sb.team_member_id,
+            tm.`name` as team_member_name,
+            sb.backlog_title,
+            sb.parent_id,
+            sb.child_node,
+            sb.backlog_status,
+            CASE sb.backlog_status
+                WHEN '1' THEN '未开始'
+                WHEN '2' THEN '进行中'
+                WHEN '3' THEN '已完成'
+                ELSE '未知'
+            END as backlog_status_name,
+            sb.backlog_goal,
+            sb.estimated_hours,
+            COALESCE((SELECT SUM(dr.actual_hours) FROM scrum_development_records dr WHERE dr.sprint_backlog_id = sb.id), sb.actual_hours) as actual_hours,
+            sb.backlog_description,
+            sb.survey_id,
+            sb.is_deleted,
+            sb.create_time,
+            sb.update_time,
+            sb.creator,
+            sb.updater
+        FROM scrum_sprint_backlogs sb
+        LEFT JOIN scrum_sprints s ON sb.sprint_id = s.id
+        LEFT JOIN scrum_products p ON s.product_id = p.id
+        LEFT JOIN scrum_teams t ON s.team_id = t.id
+        LEFT JOIN scrum_product_backlogs pb ON sb.product_backlog_id = pb.id
+        LEFT JOIN scrum_team_members tm ON sb.team_member_id = tm.id
+        WHERE sb.is_deleted = 0
+        <if test="queryForm.sprintId != null">
+            AND sb.sprint_id = #{queryForm.sprintId}
+        </if>
+        <if test="queryForm.productName != null and queryForm.productName != ''">
+            AND p.product_name LIKE CONCAT('%', #{queryForm.productName}, '%')
+        </if>
+        <if test="queryForm.sprintName != null and queryForm.sprintName != ''">
+            AND s.sprint_name LIKE CONCAT('%', #{queryForm.sprintName}, '%')
+        </if>
+        <if test="queryForm.backlogTitle != null and queryForm.backlogTitle != ''">
+            AND sb.backlog_title LIKE CONCAT('%', #{queryForm.backlogTitle}, '%')
+        </if>
+        <if test="queryForm.backlogStatus != null and queryForm.backlogStatus != ''">
+            AND sb.backlog_status = #{queryForm.backlogStatus}
+        </if>
+        <if test="queryForm.teamMemberId != null">
+            AND sb.team_member_id = #{queryForm.teamMemberId}
+        </if>
+        ORDER BY sb.create_time DESC, sb.id DESC
+    </select>
+
+    <select id="queryBySprintId" resultType="net.lab1024.sa.admin.module.scrumsprintbacklog.domain.vo.ScrumSprintBacklogVO">
+        SELECT
+            sb.id,
+            sb.sprint_id,
+            s.sprint_name,
+            p.product_name as productName,
+            t.team_name as teamName,
+            sb.product_backlog_id,
+            pb.backlog_name as product_backlog_name,
+            sb.team_member_id,
+            tm.`name` as team_member_name,
+            sb.backlog_title,
+            sb.parent_id,
+            sb.child_node,
+            sb.backlog_status,
+            CASE sb.backlog_status
+                WHEN '1' THEN '未开始'
+                WHEN '2' THEN '进行中'
+                WHEN '3' THEN '已完成'
+                ELSE '未知'
+            END as backlog_status_name,
+            sb.backlog_goal,
+            sb.estimated_hours,
+            COALESCE((SELECT SUM(dr.actual_hours) FROM scrum_development_records dr WHERE dr.sprint_backlog_id = sb.id), sb.actual_hours) as actual_hours,
+            sb.backlog_description,
+            sb.survey_id,
+            sb.is_deleted,
+            sb.create_time,
+            sb.update_time,
+            sb.creator,
+            sb.updater
+        FROM scrum_sprint_backlogs sb
+        LEFT JOIN scrum_sprints s ON sb.sprint_id = s.id
+        LEFT JOIN scrum_products p ON s.product_id = p.id
+        LEFT JOIN scrum_teams t ON s.team_id = t.id
+        LEFT JOIN scrum_product_backlogs pb ON sb.product_backlog_id = pb.id
+        LEFT JOIN scrum_team_members tm ON sb.team_member_id = tm.id
+        WHERE sb.is_deleted = 0 AND sb.sprint_id = #{sprintId}
+        ORDER BY sb.create_time DESC, sb.id DESC
+    </select>
+
+</mapper>

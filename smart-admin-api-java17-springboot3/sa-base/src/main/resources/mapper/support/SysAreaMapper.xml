@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.sa.admin.module.area.dao.SysAreaDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        sys_area.id,
+        sys_area.name,
+        sys_area.pid,
+        sys_area.simplename,
+        sys_area.level,
+        sys_area.citycode,
+        sys_area.zipcode,
+        sys_area.mername,
+        sys_area.lng,
+        sys_area.lat,
+        sys_area.pinyin,
+        sys_area.create_time,
+        sys_area.update_time,
+        sys_area.creator,
+        sys_area.updater
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="net.lab1024.sa.admin.module.area.domain.vo.SysAreaVO">
+        SELECT
+        <include refid="base_columns"/>
+        FROM sys_area
+        <where>
+            <!--区域名称（如北京市、朝阳区）-->
+            <if test="queryForm.name != null">
+                AND sys_area.name = #{queryForm.name}
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 顶级区域列表（level=1） -->
+    <select id="listTop" resultType="net.lab1024.sa.admin.module.area.domain.entity.SysAreaEntity">
+        SELECT *
+        FROM sys_area
+        WHERE level = 1
+        ORDER BY id
+    </select>
+
+    <!-- 根据父级区域ID查询子区域 -->
+    <select id="listChildren" resultType="net.lab1024.sa.admin.module.area.domain.entity.SysAreaEntity">
+        SELECT *
+        FROM sys_area
+        WHERE pid = #{pid}
+        ORDER BY id
+    </select>
+
+
+</mapper>

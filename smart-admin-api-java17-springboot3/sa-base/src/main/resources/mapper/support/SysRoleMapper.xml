@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.sa.admin.module.role.dao.SysRoleDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        sys_role.id,
+        sys_role.role_code,
+        sys_role.role_name,
+        sys_role.parent_id,
+        sys_role.order_num,
+        sys_role.level,
+        sys_role.jxfm,
+        sys_role.dy,
+        sys_role.status,
+        sys_role.remark,
+        sys_role.create_time,
+        sys_role.update_time
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="net.lab1024.sa.admin.module.role.domain.vo.SysRoleVO">
+        SELECT
+        <include refid="base_columns"/>
+        FROM sys_role
+        <where>
+            <if test="queryForm.roleName != null and queryForm.roleName != ''">
+                AND INSTR(sys_role.role_name, #{queryForm.roleName})
+            </if>
+            <if test="queryForm.roleCode != null and queryForm.roleCode != ''">
+                AND INSTR(sys_role.role_code, #{queryForm.roleCode})
+            </if>
+            <if test="queryForm.parentId != null">
+                AND sys_role.parent_id = #{queryForm.parentId}
+            </if>
+            <if test="queryForm.status != null">
+                AND sys_role.status = #{queryForm.status}
+            </if>
+        </where>
+        ORDER BY sys_role.order_num ASC, sys_role.id ASC
+    </select>
+
+    <!-- 查询全部（用于前端构建列表/树） -->
+    <select id="listAll" resultType="net.lab1024.sa.admin.module.role.domain.vo.SysRoleVO">
+        SELECT
+        <include refid="base_columns"/>
+        FROM sys_role
+        ORDER BY sys_role.order_num ASC, sys_role.id ASC
+    </select>
+
+
+</mapper>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.sa.admin.module.systemconfig.dao.SystemConfigDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        sys_system_config.id,
+        sys_system_config.site_title,
+        sys_system_config.system_name,
+        sys_system_config.site_logo,
+        sys_system_config.icp_number,
+        sys_system_config.footer_content,
+        sys_system_config.mail_server,
+        sys_system_config.mail_port,
+        sys_system_config.mail_from,
+        sys_system_config.mail_user,
+        sys_system_config.mail_password
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="net.lab1024.sa.admin.module.systemconfig.domain.vo.SystemConfigVO">
+        SELECT
+        <include refid="base_columns"/>
+        FROM sys_system_config
+        <where>
+            <!--配置ID（主键）-->
+            <if test="queryForm.id != null">
+                AND sys_system_config.id = #{queryForm.id}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

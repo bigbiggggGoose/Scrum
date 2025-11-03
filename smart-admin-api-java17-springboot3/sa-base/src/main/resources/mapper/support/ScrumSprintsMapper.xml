@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.sa.admin.module.scrumsprints.dao.ScrumSprintsDao">
+
+    <!-- 查询结果列：使用表别名 s -->
+    <sql id="base_columns">
+        s.id,
+        s.sprint_name,
+        s.product_id,
+        s.team_id,
+        s.sprint_goal,
+        s.sprint_status,
+        s.sprint_progress,
+        s.total_man_day,
+        s.consumed_hours,
+        s.start_date,
+        s.end_date,
+        s.remark,
+        s.is_deleted,
+        s.create_time,
+        s.update_time,
+        s.creator,
+        s.updater
+    </sql>
+
+    <!-- 分页查询：关联产品与团队，支持产品ID/名称筛选 -->
+    <select id="queryPage" resultType="net.lab1024.sa.admin.module.scrumsprints.domain.vo.ScrumSprintsVO">
+        SELECT
+            <include refid="base_columns"/>,
+            p.product_name AS productName,
+            t.team_name AS teamName
+        FROM scrum_sprints s
+        LEFT JOIN scrum_products p ON s.product_id = p.id
+        LEFT JOIN scrum_teams t ON s.team_id = t.id
+        <where>
+            s.is_deleted = 0
+            <if test="queryForm.productId != null">
+                AND s.product_id = #{queryForm.productId}
+            </if>
+            <if test="queryForm.productName != null and queryForm.productName != ''">
+                AND p.product_name LIKE CONCAT('%', #{queryForm.productName}, '%')
+            </if>
+        </where>
+        ORDER BY s.start_date DESC, s.id DESC
+    </select>
+
+</mapper>

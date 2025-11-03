@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.sa.admin.module.users.dao.SysUserDao">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        sys_user.id,
+        sys_user.username,
+        sys_user.password,
+        sys_user.real_name,
+        sys_user.sidx,
+        sys_user.avatar_url,
+        sys_user.birth,
+        sys_user.sex,
+        sys_user.email,
+        sys_user.phone,
+        sys_user.role_id,
+        sys_user.dept_id,
+        sys_user.wxapp_uid,
+        sys_user.wxapp_openid,
+        sys_user.is_disable,
+        sys_user.status,
+        sys_user.remark,
+        sys_user.create_time,
+        sys_user.update_time
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="net.lab1024.sa.admin.module.users.domain.vo.SysUserVO">
+        SELECT
+        <include refid="base_columns"/>
+        FROM sys_user
+        <where>
+            <!--登录名（唯一）-->
+            <if test="queryForm.username != null">
+                AND sys_user.username = #{queryForm.username}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

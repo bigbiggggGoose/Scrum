@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.lab1024.sa.admin.module.users.dao.SysUserDao">
+
+    <!-- 分页查询用户，关联角色与部门 -->
+    <select id="queryPage" resultType="net.lab1024.sa.admin.module.users.domain.vo.SysUserVO">
+        SELECT
+            u.id,
+            u.username,
+            u.password,
+            u.real_name AS realName,
+            u.sidx,
+            u.avatar_url AS avatarUrl,
+            u.birth,
+            u.sex,
+            u.email,
+            u.phone,
+            u.role_id AS roleId,
+            u.dept_id AS deptId,
+            r.role_name AS roleName,
+            d.dept_name AS deptName,
+            u.wxapp_uid AS wxappUid,
+            u.wxapp_openid AS wxappOpenid,
+            u.is_disable AS isDisable,
+            u.status,
+            u.remark
+        FROM sys_user u
+        LEFT JOIN sys_user_role ur ON ur.user_id = u.id
+        LEFT JOIN sys_role r ON r.id = ur.role_id
+        LEFT JOIN sys_dept d ON d.id = u.dept_id
+        <where>
+            <if test="queryForm.username != null and queryForm.username != ''">
+                AND INSTR(u.username, #{queryForm.username})
+            </if>
+            <if test="queryForm.realName != null and queryForm.realName != ''">
+                AND INSTR(u.real_name, #{queryForm.realName})
+            </if>
+            <if test="queryForm.phone != null and queryForm.phone != ''">
+                AND INSTR(u.phone, #{queryForm.phone})
+            </if>
+            <if test="queryForm.email != null and queryForm.email != ''">
+                AND INSTR(u.email, #{queryForm.email})
+            </if>
+            <if test="queryForm.deptId != null">
+                AND u.dept_id = #{queryForm.deptId}
+            </if>
+            <if test="queryForm.roleId != null">
+                AND ur.role_id = #{queryForm.roleId}
+            </if>
+            <if test="queryForm.sex != null">
+                AND u.sex = #{queryForm.sex}
+            </if>
+        </where>
+        ORDER BY u.id DESC
+    </select>
+
+</mapper>
