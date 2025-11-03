@@ -10,3 +10,19 @@ Scrum 被广泛应用于软件、硬件、嵌入式、网络交互、自动驾�
 形成“环境配置模板 + 脚本化修复 + 启动巡检”的运维工作流，降低新人接入成本。
 沉淀团队规范：接口命名、事务边界、错误码与日志规范、构建与发布清单。
 
+![image](222C.jpg)
+
+![image](1.png)
+![image](2.png)
+![image](3.png)
+![image](4.png)
+![image](5.png)
+![image](6.png)
+![image](7.png)
+![image](8.png)
+![image](9.png)
+![image](10.png)
+![image](11.png)
+![image](12.png)
+![image](13.png)
+![image](14.png)
